@@ -20,6 +20,7 @@
 - Should not have any issues, ocassionaly I had an undefined error for a value I_int, this was set as a global value in the run file to fix it and is an issue with how I wrote the code, If it occurs run a line in the Run file with the missing value that wasnt defined set to 1 (has to do with my loop) HOWEVER this should be fixed 
 -----------------------
 # Summary 
+- NOTE: all the explination below is explined in detail in the Written response file Q_2_Prelim_7770.PDF
 I) Question 2 invloves three parts. 
   - part a is a simulation with a generated plot (Provided as Figure_1_supplemental_Q2.PNG) of the protein levels as a function of time.
   - part b asks for the computation of the scaled sensitivity coefficents for three time windows. These are embedded in the code however they are given a name and the Run file will tell which value to typo or look in the workspace to find,
