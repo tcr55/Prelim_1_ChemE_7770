@@ -1,6 +1,8 @@
 # Prelim_1_ChemE_7770
-First Prelim for Chem E 7770, Thomas Roberts
-
+-First Prelim for Chem E 7770, 
+-Author: Thomas Roberts
+-Due Date: 3/25/2019
+-Class: Chem E 7770
 
 ---------------------------------------------------------------------
 - Prelim 1 has three questions, each of my attempts at these questions are stored in the Prelim_1 folder.
