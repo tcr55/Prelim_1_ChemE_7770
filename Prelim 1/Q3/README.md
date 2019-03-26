@@ -1,43 +1,42 @@
 # Question 2
 ------------------------
 # Included Files 
-1) Change_matrix.jl
-2) Figure_for_compare.PNG
-3) parameters_for_number_2_prelim.jl
-4) PS_2_modification_for_prelim.jl
-5) Q_2_Prelim_7770.PDF
-6) Q_2_Run.jl
-7) Sensitivity_for_prelim.jl
-8) Sorting_Run.jl
-9) Figure_1_supplemental_Q2.PNG
+1) Backup plot for convinience.PNG
+2) Figure_1_Supplemental_Q3.PNG
+3) calculate_optimal_flux_distribution.jl
+4) Q_3_Prelim_7770.PDF
+5) Q_3_Run.jl
+6) Prelim_Question_3_data.jl
+7) Solver_For_Run_Prelim.jl
+
 -----------------------
 # Specific Instructions
-- Code for question 2 to produce the figure and generate the sensitivity values (too many to provide easily) should all run from the main Q_2_Run.jl file 
-- Make sure all the other files are in the same folder or location so the when the Q_2_Run.jl calls for them that it can get them 
-- If it has issues with that run each file separately starting with the parameters_for_number_2_prelim and then Change_matrix.
+- Q_3_Run.jl is the primary run file that will run the entire question and generate the answers.
+- make sure all the other files are in the same location as Q_3_Run.jl so it can call corectly
+- Written derivation and plot answers are provided in the PDF and PNG files
 -----------------------
 # Issues
-- Should not have any issues, ocassionaly I had an undefined error for a value I_int, this was set as a global value in the run file to fix it and is an issue with how I wrote the code, If it occurs run a line in the Run file with the missing value that wasnt defined set to 1 (has to do with my loop) HOWEVER this should be fixed 
+- Should not have any issues, ocassionaly I had an undefined error for a value InD, this was set as a global value in the run file to fix it and is an issue with how I wrote the code, If it occurs run a line in the Run file with the missing value that wasnt defined set to 1 (has to do with my loop) HOWEVER this should be fixed 
 -----------------------
 # Summary 
-# NOTE: all the explination below is explined in detail in the Written response file Q_2_Prelim_7770.PDF
-
-I) Question 2 invloves three parts. 
-  - part a is a simulation with a generated plot (Provided as Figure_1_supplemental_Q2.PNG) of the protein levels as a function of time.
-  - part b asks for the computation of the scaled sensitivity coefficents for three time windows. These are embedded in the code however they are given a name and the Run file will tell which value to typo or look in the workspace to find,
-    - this has to due with each phase having a sensitivity coefficent array or 3 X 18 X 20 which is too large to show outside of code.
-  - part c asks to compute the Time averaged sensitivy array to use in a singular value decomposition to get a U array of the species to rank for importance across the three phases
+# NOTE: all the explination below is explined in detail in the Written response file Q_3_Prelim_7770.PDF
+I) The first part of Question 3 asks for the creation of a stoiciometric matrix
+  - This is labled as Figure_1_Supplemental_Q3.PNG in the provided files
+  - The Stoiciometric matirx is also written in the code in the Prelim_Question_3_data.jl file 
+  - Can lastly use the workspace in Atom or Julia to get it, it is labeld as S or as stoiciometric_matrix (S is easier)
+II)The second part of question 3 part a asks for the formulation of expressions for the rates to be used as bounds in the bounds array. 
+  - This is done in the Written file Q_3_Prelim_7770.PDF as there is a lot of math to write 
+  - Note the question states that the R2 (or v2 in the code) will be equal to the r_x equation so I set both sides of the bounds equal to the value to force it to never deviate from that value. if this causes error with the GLPK solver that is the assumption that causes values to deviate from the actual.
+III) The second part of Question 3 asks to maximize the translation rate v5 for a range of inducer additions.
+  - This was done and a plot of the Protein level vs the inducer is given as "Backup plot for convinience.PNG" to see easily the result
+  - NOTE: there are significantly fewer data points at the low inducer compared to the late inducer, I can correct for this, and did by doubling the step size, however this caused SUBSTANTIAL slow down of the code. For sake of brevity and the general trend it maintained i am running with the reduced step size and assuming the values i could get are sufficicent.
+  - The graph shows the characteristic S shaped curve as expected.
   
-II) The Phases
-  - The phases are broken into three parts,
-    1) Phase 1 is no inducer for 120 minutes
-    2) Phase 2 is the early indcuer additon at around 210 to 240 minutes
-    3) Phase 3 is late inducer addtion and is from 390 to 410 minutes
-    
-# Key Results and Answer Summary
-I) the plot is provided and shows an increase in the protein levels after inducer is added, with clear repression of P3 from P2.
-II) the sensitivity coefficients were genrated using the code, where the partial derivative was approximated using the central differnce formula. 
-  - This involved computing the species (protein) values multiple times to have a high and low value to perform the central difference calcualtion with. step sizes for the parameter changes were also computed and put for the denominator in the central differnce formula.
+IIII) the last part (part c) of question 3 asks about which exchange fluxes is the translation rate most sensitive to.
+  - A longer form discussion of this is done in the Q_3_Prelim_7770.PDF file however the following is the key answer (barring the explination for a shadow price done in the PDF) 
+  - The code was run twice to generate values at high inducer levels and at low inducer levels. what was found was that b2,b4,b9 were the most sensitive exhance fluxes, with the b1,3,6,5 and b7,8 fluxes swapping between being sensitive at high inducer vs at low inducer. 
+  - The key draw therefore is that the exchange fluxes providing or removing metabolites nessesary for Transcription have the largest effect on the Translation rate. This means that the system is more sensitive towards the metabolites needed to produce mRNA over the metabolites needed to produce the protein( b1,3,5,6) or the ones to funnel GTP (b7,b8) .
+  - This seems to be in line with how cell machenery works, where control structure is focused on the Transcription process (Ux = f(I,G,RNA,...)) and not the translation process (Ul = 1). So any changes to the system from that Transcription control is emulated by restricting the bounds. The resulting percent change of the protein level from baseline to restricted bounds was always significantly higher in the Transcription metabolite fluxes (b2,4,9). Thus based around the shadow price understanding, it cost significantly less to reduce the overall Translation rate or increase the rate by changing the Transcription metabolite fluxes (b2,4,9).
 
-III) part C asks for an explination of the rankings and shifts in rankings of the species importance array gained from the U matrix.
-  - The summary is that P2 has the higest importance in early time before the inducer is added. P1 and P3 have low importance in the ranking and contribute very little to the control at no inducer level. Once the inducer is added however the P1 and P2 contributions rise and the P2 contribution declines. this holds for both early and late inducer times. The uderstanding I have of this is that the shifts in ranking is occuring when the system is going from one controled and levels primarily gained from repression control and background leackage. Since P2 is the repressor in this system, most of the control would therefore fall on it when inducer is absent. once inducer was added P1 and P3 take over as the system is now moved into an inducer driven control, and P2 controls less than it did. however it still controls enough to keep P3 below P2 levels which hypothetically if the inducer was removed the P2 control should kick back in like it was in phase 1.
+    
+
